@@ -1,350 +1,409 @@
-import Contractor from '../models/Contractor.js';
+import Contractor from "../models/Contractor.js";
 
 const seedContractors = async () => {
-    try {
-        await Contractor.deleteMany({});
+  try {
+    await Contractor.deleteMany({});
 
-        const contractors = [
-            {
-                company_name: 'AZARRAGA CONSTRUCTION',
-                contract_ids: ['24EG0058'],
-                total_projects: 1,
-                completed_projects: 1,
-                ongoing_projects: 0,
-                total_contract_value: 17961569.07,
-                success_rate: 100,
-                credit_score: 75,
-                average_completion_time_days: 97,
-                on_time_completion_rate: 100,
-                budget_adherence_rate: 99.99,
-                location_preferences: [
-                    {
-                        region: 'Region IV-B',
-                        district: 'PALAWAN (THIRD LEGISLATIVE DISTRICT)',
-                        project_count: 1
-                    }
-                ],
-                project_type_expertise: [
-                    {
-                        type_of_work: 'Construction of Flood Mitigation Structure',
-                        project_count: 1,
-                        success_rate: 100
-                    }
-                ],
-                verified: true
-            },
-            {
-                company_name: 'ABC CONSTRUCTION COMPANY',
-                contract_ids: [],
-                total_projects: 3,
-                completed_projects: 2,
-                ongoing_projects: 1,
-                total_contract_value: 45000000,
-                success_rate: 85,
-                credit_score: 65,
-                average_completion_time_days: 120,
-                on_time_completion_rate: 75,
-                budget_adherence_rate: 92,
-                location_preferences: [
-                    {
-                        region: 'NCR',
-                        district: 'MANILA (FIRST LEGISLATIVE DISTRICT)',
-                        project_count: 2
-                    },
-                    {
-                        region: 'Region IV-A',
-                        district: 'LAGUNA (SECOND LEGISLATIVE DISTRICT)',
-                        project_count: 1
-                    }
-                ],
-                project_type_expertise: [
-                    {
-                        type_of_work: 'Construction of Flood Mitigation Structure',
-                        project_count: 2,
-                        success_rate: 90
-                    },
-                    {
-                        type_of_work: 'River Channel Improvement',
-                        project_count: 1,
-                        success_rate: 75
-                    }
-                ],
-                verified: true
-            },
-            {
-                company_name: 'XYZ INFRASTRUCTURE BUILDERS',
-                contract_ids: [],
-                total_projects: 5,
-                completed_projects: 4,
-                ongoing_projects: 1,
-                total_contract_value: 125000000,
-                success_rate: 95,
-                credit_score: 88,
-                average_completion_time_days: 95,
-                on_time_completion_rate: 90,
-                budget_adherence_rate: 98,
-                location_preferences: [
-                    {
-                        region: 'Region III',
-                        district: 'PAMPANGA (FIRST LEGISLATIVE DISTRICT)',
-                        project_count: 3
-                    },
-                    {
-                        region: 'Region IV-A',
-                        district: 'BATANGAS (SECOND LEGISLATIVE DISTRICT)',
-                        project_count: 2
-                    }
-                ],
-                project_type_expertise: [
-                    {
-                        type_of_work: 'Construction of Flood Mitigation Structure',
-                        project_count: 3,
-                        success_rate: 95
-                    },
-                    {
-                        type_of_work: 'Drainage System Improvement',
-                        project_count: 2,
-                        success_rate: 95
-                    }
-                ],
-                verified: true
-            },
-            {
-                company_name: 'PHANTOM BUILDERS CORP',
-                contract_ids: [],
-                total_projects: 4,
-                completed_projects: 0,
-                ongoing_projects: 4,
-                total_contract_value: 95000000,
-                success_rate: 0,
-                credit_score: 15,
-                average_completion_time_days: 0,
-                on_time_completion_rate: 0,
-                budget_adherence_rate: 45,
-                location_preferences: [
-                    {
-                        region: 'Region V',
-                        district: 'ALBAY (FIRST LEGISLATIVE DISTRICT)',
-                        project_count: 4
-                    }
-                ],
-                project_type_expertise: [
-                    {
-                        type_of_work: 'Construction of Flood Mitigation Structure',
-                        project_count: 4,
-                        success_rate: 0
-                    }
-                ],
-                verified: false
-            },
-            {
-                company_name: 'SHADOW CONSTRUCTION INC',
-                contract_ids: [],
-                total_projects: 6,
-                completed_projects: 1,
-                ongoing_projects: 5,
-                total_contract_value: 180000000,
-                success_rate: 16,
-                credit_score: 22,
-                average_completion_time_days: 0,
-                on_time_completion_rate: 0,
-                budget_adherence_rate: 52,
-                location_preferences: [
-                    {
-                        region: 'Region VI',
-                        district: 'ILOILO (FIRST LEGISLATIVE DISTRICT)',
-                        project_count: 6
-                    }
-                ],
-                project_type_expertise: [
-                    {
-                        type_of_work: 'Construction of Flood Mitigation Structure',
-                        project_count: 4,
-                        success_rate: 0
-                    },
-                    {
-                        type_of_work: 'River Channel Improvement',
-                        project_count: 2,
-                        success_rate: 50
-                    }
-                ],
-                verified: false
-            },
-            {
-                company_name: 'QUICK MONEY BUILDERS',
-                contract_ids: [],
-                total_projects: 3,
-                completed_projects: 0,
-                ongoing_projects: 3,
-                total_contract_value: 75000000,
-                success_rate: 0,
-                credit_score: 8,
-                average_completion_time_days: 0,
-                on_time_completion_rate: 0,
-                budget_adherence_rate: 38,
-                location_preferences: [
-                    {
-                        region: 'Region VII',
-                        district: 'CEBU (SECOND LEGISLATIVE DISTRICT)',
-                        project_count: 3
-                    }
-                ],
-                project_type_expertise: [
-                    {
-                        type_of_work: 'Construction of Flood Mitigation Structure',
-                        project_count: 3,
-                        success_rate: 0
-                    }
-                ],
-                verified: false
-            },
-            {
-                company_name: 'RELIABLE FLOOD CONTROL SERVICES',
-                contract_ids: [],
-                total_projects: 8,
-                completed_projects: 7,
-                ongoing_projects: 1,
-                total_contract_value: 210000000,
-                success_rate: 92,
-                credit_score: 82,
-                average_completion_time_days: 110,
-                on_time_completion_rate: 87,
-                budget_adherence_rate: 94,
-                location_preferences: [
-                    {
-                        region: 'Region VIII',
-                        district: 'LEYTE (FIRST LEGISLATIVE DISTRICT)',
-                        project_count: 5
-                    },
-                    {
-                        region: 'Region VIII',
-                        district: 'SAMAR (SECOND LEGISLATIVE DISTRICT)',
-                        project_count: 3
-                    }
-                ],
-                project_type_expertise: [
-                    {
-                        type_of_work: 'Construction of Flood Mitigation Structure',
-                        project_count: 5,
-                        success_rate: 90
-                    },
-                    {
-                        type_of_work: 'Drainage System Improvement',
-                        project_count: 3,
-                        success_rate: 95
-                    }
-                ],
-                verified: true
-            },
-            {
-                company_name: 'SUSPICIOUS INFRASTRUCTURE GROUP',
-                contract_ids: [],
-                total_projects: 5,
-                completed_projects: 1,
-                ongoing_projects: 4,
-                total_contract_value: 140000000,
-                success_rate: 20,
-                credit_score: 18,
-                average_completion_time_days: 0,
-                on_time_completion_rate: 0,
-                budget_adherence_rate: 42,
-                location_preferences: [
-                    {
-                        region: 'Region IX',
-                        district: 'ZAMBOANGA DEL NORTE (FIRST LEGISLATIVE DISTRICT)',
-                        project_count: 5
-                    }
-                ],
-                project_type_expertise: [
-                    {
-                        type_of_work: 'Construction of Flood Mitigation Structure',
-                        project_count: 5,
-                        success_rate: 20
-                    }
-                ],
-                verified: false
-            },
-            {
-                company_name: 'GHOST PROJECT CONSTRUCTION',
-                contract_ids: [],
-                total_projects: 7,
-                completed_projects: 0,
-                ongoing_projects: 7,
-                total_contract_value: 165000000,
-                success_rate: 0,
-                credit_score: 5,
-                average_completion_time_days: 0,
-                on_time_completion_rate: 0,
-                budget_adherence_rate: 28,
-                location_preferences: [
-                    {
-                        region: 'Region X',
-                        district: 'MISAMIS ORIENTAL (FIRST LEGISLATIVE DISTRICT)',
-                        project_count: 7
-                    }
-                ],
-                project_type_expertise: [
-                    {
-                        type_of_work: 'Construction of Flood Mitigation Structure',
-                        project_count: 4,
-                        success_rate: 0
-                    },
-                    {
-                        type_of_work: 'River Channel Improvement',
-                        project_count: 3,
-                        success_rate: 0
-                    }
-                ],
-                verified: false
-            },
-            {
-                company_name: 'TRUSTWORTHY BUILDERS PH',
-                contract_ids: [],
-                total_projects: 6,
-                completed_projects: 6,
-                ongoing_projects: 0,
-                total_contract_value: 195000000,
-                success_rate: 100,
-                credit_score: 92,
-                average_completion_time_days: 98,
-                on_time_completion_rate: 95,
-                budget_adherence_rate: 97,
-                location_preferences: [
-                    {
-                        region: 'Region XI',
-                        district: 'DAVAO DEL SUR (FIRST LEGISLATIVE DISTRICT)',
-                        project_count: 3
-                    },
-                    {
-                        region: 'Region XI',
-                        district: 'DAVAO DEL NORTE (SECOND LEGISLATIVE DISTRICT)',
-                        project_count: 3
-                    }
-                ],
-                project_type_expertise: [
-                    {
-                        type_of_work: 'Construction of Flood Mitigation Structure',
-                        project_count: 4,
-                        success_rate: 100
-                    },
-                    {
-                        type_of_work: 'Drainage System Improvement',
-                        project_count: 2,
-                        success_rate: 100
-                    }
-                ],
-                verified: true
-            }
-        ];
+    const contractors = [
+      {
+        company_name: "AZARRAGA CONSTRUCTION",
+        contact_person: "Maria Azarraga",
+        contact_number: "+63 2 8888 0001",
+        email: "contact@azarragaconstruction.com",
+        address: "Palawan, Region IV-B, Philippines",
+        license_number: "LIC-AZARRAGA-001",
+        years_in_business: 12,
+        contract_ids: ["24EG0058"],
+        total_projects: 1,
+        completed_projects: 1,
+        ongoing_projects: 0,
+        total_contract_value: 17961569.07,
+        success_rate: 100,
+        credit_score: 75,
+        average_completion_time_days: 97,
+        on_time_completion_rate: 100,
+        budget_adherence_rate: 99.99,
+        location_preferences: [
+          {
+            region: "Region IV-B",
+            district: "PALAWAN (THIRD LEGISLATIVE DISTRICT)",
+            project_count: 1,
+          },
+        ],
+        project_type_expertise: [
+          {
+            type_of_work: "Construction of Flood Mitigation Structure",
+            project_count: 1,
+            success_rate: 100,
+          },
+        ],
+        verified: true,
+      },
+      {
+        company_name: "ABC CONSTRUCTION COMPANY",
+        contact_person: "Juan Carlos Reyes",
+        contact_number: "+63 917 555 0002",
+        email: "info@abcconstruction.com.ph",
+        address: "Manila, NCR, Philippines",
+        license_number: "LIC-ABC-0002",
+        years_in_business: 8,
+        contract_ids: [],
+        total_projects: 3,
+        completed_projects: 2,
+        ongoing_projects: 1,
+        total_contract_value: 45000000,
+        success_rate: 85,
+        credit_score: 65,
+        average_completion_time_days: 120,
+        on_time_completion_rate: 75,
+        budget_adherence_rate: 92,
+        location_preferences: [
+          {
+            region: "NCR",
+            district: "MANILA (FIRST LEGISLATIVE DISTRICT)",
+            project_count: 2,
+          },
+          {
+            region: "Region IV-A",
+            district: "LAGUNA (SECOND LEGISLATIVE DISTRICT)",
+            project_count: 1,
+          },
+        ],
+        project_type_expertise: [
+          {
+            type_of_work: "Construction of Flood Mitigation Structure",
+            project_count: 2,
+            success_rate: 90,
+          },
+          {
+            type_of_work: "River Channel Improvement",
+            project_count: 1,
+            success_rate: 75,
+          },
+        ],
+        verified: true,
+      },
+      {
+        company_name: "XYZ INFRASTRUCTURE BUILDERS",
+        contact_person: "Ricardo Santos",
+        contact_number: "+63 919 888 0003",
+        email: "admin@xyzinfra.com",
+        address: "Pampanga, Region III, Philippines",
+        license_number: "LIC-XYZ-0003",
+        years_in_business: 15,
+        contract_ids: [],
+        total_projects: 5,
+        completed_projects: 4,
+        ongoing_projects: 1,
+        total_contract_value: 125000000,
+        success_rate: 95,
+        credit_score: 88,
+        average_completion_time_days: 95,
+        on_time_completion_rate: 90,
+        budget_adherence_rate: 98,
+        location_preferences: [
+          {
+            region: "Region III",
+            district: "PAMPANGA (FIRST LEGISLATIVE DISTRICT)",
+            project_count: 3,
+          },
+          {
+            region: "Region IV-A",
+            district: "BATANGAS (SECOND LEGISLATIVE DISTRICT)",
+            project_count: 2,
+          },
+        ],
+        project_type_expertise: [
+          {
+            type_of_work: "Construction of Flood Mitigation Structure",
+            project_count: 3,
+            success_rate: 95,
+          },
+          {
+            type_of_work: "Drainage System Improvement",
+            project_count: 2,
+            success_rate: 95,
+          },
+        ],
+        verified: true,
+      },
+      {
+        company_name: "PHANTOM BUILDERS CORP",
+        contact_person: "Unknown Contact",
+        contact_number: "+63 900 111 0004",
+        email: "contact@phantombuilders.com",
+        address: "Albay, Region V, Philippines",
+        license_number: "LIC-PHANTOM-0004",
+        years_in_business: 2,
+        contract_ids: [],
+        total_projects: 4,
+        completed_projects: 0,
+        ongoing_projects: 4,
+        total_contract_value: 95000000,
+        success_rate: 0,
+        credit_score: 15,
+        average_completion_time_days: 0,
+        on_time_completion_rate: 0,
+        budget_adherence_rate: 45,
+        location_preferences: [
+          {
+            region: "Region V",
+            district: "ALBAY (FIRST LEGISLATIVE DISTRICT)",
+            project_count: 4,
+          },
+        ],
+        project_type_expertise: [
+          {
+            type_of_work: "Construction of Flood Mitigation Structure",
+            project_count: 4,
+            success_rate: 0,
+          },
+        ],
+        verified: false,
+      },
+      {
+        company_name: "SHADOW CONSTRUCTION INC",
+        contact_person: "Anonymous Builder",
+        contact_number: "+63 901 222 0005",
+        email: "info@shadowcon.com",
+        address: "Iloilo, Region VI, Philippines",
+        license_number: "LIC-SHADOW-0005",
+        years_in_business: 3,
+        contract_ids: [],
+        total_projects: 6,
+        completed_projects: 1,
+        ongoing_projects: 5,
+        total_contract_value: 180000000,
+        success_rate: 16,
+        credit_score: 22,
+        average_completion_time_days: 0,
+        on_time_completion_rate: 0,
+        budget_adherence_rate: 52,
+        location_preferences: [
+          {
+            region: "Region VI",
+            district: "ILOILO (FIRST LEGISLATIVE DISTRICT)",
+            project_count: 6,
+          },
+        ],
+        project_type_expertise: [
+          {
+            type_of_work: "Construction of Flood Mitigation Structure",
+            project_count: 4,
+            success_rate: 0,
+          },
+          {
+            type_of_work: "River Channel Improvement",
+            project_count: 2,
+            success_rate: 50,
+          },
+        ],
+        verified: false,
+      },
+      {
+        company_name: "QUICK MONEY BUILDERS",
+        contact_person: "Fast Track Developer",
+        contact_number: "+63 902 333 0006",
+        email: "contact@quickmoney.ph",
+        address: "Cebu, Region VII, Philippines",
+        license_number: "LIC-QUICK-0006",
+        years_in_business: 1,
+        contract_ids: [],
+        total_projects: 3,
+        completed_projects: 0,
+        ongoing_projects: 3,
+        total_contract_value: 75000000,
+        success_rate: 0,
+        credit_score: 8,
+        average_completion_time_days: 0,
+        on_time_completion_rate: 0,
+        budget_adherence_rate: 38,
+        location_preferences: [
+          {
+            region: "Region VII",
+            district: "CEBU (SECOND LEGISLATIVE DISTRICT)",
+            project_count: 3,
+          },
+        ],
+        project_type_expertise: [
+          {
+            type_of_work: "Construction of Flood Mitigation Structure",
+            project_count: 3,
+            success_rate: 0,
+          },
+        ],
+        verified: false,
+      },
+      {
+        company_name: "RELIABLE FLOOD CONTROL SERVICES",
+        contact_person: "Pedro Fernandez",
+        contact_number: "+63 918 444 0007",
+        email: "support@reliablefloodcontrol.com",
+        address: "Leyte, Region VIII, Philippines",
+        license_number: "LIC-RELIABLE-0007",
+        years_in_business: 14,
+        contract_ids: [],
+        total_projects: 8,
+        completed_projects: 7,
+        ongoing_projects: 1,
+        total_contract_value: 210000000,
+        success_rate: 92,
+        credit_score: 82,
+        average_completion_time_days: 110,
+        on_time_completion_rate: 87,
+        budget_adherence_rate: 94,
+        location_preferences: [
+          {
+            region: "Region VIII",
+            district: "LEYTE (FIRST LEGISLATIVE DISTRICT)",
+            project_count: 5,
+          },
+          {
+            region: "Region VIII",
+            district: "SAMAR (SECOND LEGISLATIVE DISTRICT)",
+            project_count: 3,
+          },
+        ],
+        project_type_expertise: [
+          {
+            type_of_work: "Construction of Flood Mitigation Structure",
+            project_count: 5,
+            success_rate: 90,
+          },
+          {
+            type_of_work: "Drainage System Improvement",
+            project_count: 3,
+            success_rate: 95,
+          },
+        ],
+        verified: true,
+      },
+      {
+        company_name: "SUSPICIOUS INFRASTRUCTURE GROUP",
+        contact_person: "Unclear Management",
+        contact_number: "+63 903 555 0008",
+        email: "info@suspiciousinfra.com",
+        address: "Zamboanga del Norte, Region IX, Philippines",
+        license_number: "LIC-SUSPICIOUS-0008",
+        years_in_business: 4,
+        contract_ids: [],
+        total_projects: 5,
+        completed_projects: 1,
+        ongoing_projects: 4,
+        total_contract_value: 140000000,
+        success_rate: 20,
+        credit_score: 18,
+        average_completion_time_days: 0,
+        on_time_completion_rate: 0,
+        budget_adherence_rate: 42,
+        location_preferences: [
+          {
+            region: "Region IX",
+            district: "ZAMBOANGA DEL NORTE (FIRST LEGISLATIVE DISTRICT)",
+            project_count: 5,
+          },
+        ],
+        project_type_expertise: [
+          {
+            type_of_work: "Construction of Flood Mitigation Structure",
+            project_count: 5,
+            success_rate: 20,
+          },
+        ],
+        verified: false,
+      },
+      {
+        company_name: "GHOST PROJECT CONSTRUCTION",
+        contact_person: "Elusive Developer",
+        contact_number: "+63 904 666 0009",
+        email: "contact@ghostproject.com",
+        address: "Misamis Oriental, Region X, Philippines",
+        license_number: "LIC-GHOST-0009",
+        years_in_business: 2,
+        contract_ids: [],
+        total_projects: 7,
+        completed_projects: 0,
+        ongoing_projects: 7,
+        total_contract_value: 165000000,
+        success_rate: 0,
+        credit_score: 5,
+        average_completion_time_days: 0,
+        on_time_completion_rate: 0,
+        budget_adherence_rate: 28,
+        location_preferences: [
+          {
+            region: "Region X",
+            district: "MISAMIS ORIENTAL (FIRST LEGISLATIVE DISTRICT)",
+            project_count: 7,
+          },
+        ],
+        project_type_expertise: [
+          {
+            type_of_work: "Construction of Flood Mitigation Structure",
+            project_count: 4,
+            success_rate: 0,
+          },
+          {
+            type_of_work: "River Channel Improvement",
+            project_count: 3,
+            success_rate: 0,
+          },
+        ],
+        verified: false,
+      },
+      {
+        company_name: "TRUSTWORTHY BUILDERS PH",
+        contact_person: "Angela Lopez",
+        contact_number: "+63 920 777 0010",
+        email: "hello@trustworthybuilders.ph",
+        address: "Davao del Sur, Region XI, Philippines",
+        license_number: "LIC-TRUSTWORTHY-0010",
+        years_in_business: 18,
+        contract_ids: [],
+        total_projects: 6,
+        completed_projects: 6,
+        ongoing_projects: 0,
+        total_contract_value: 195000000,
+        success_rate: 100,
+        credit_score: 92,
+        average_completion_time_days: 98,
+        on_time_completion_rate: 95,
+        budget_adherence_rate: 97,
+        location_preferences: [
+          {
+            region: "Region XI",
+            district: "DAVAO DEL SUR (FIRST LEGISLATIVE DISTRICT)",
+            project_count: 3,
+          },
+          {
+            region: "Region XI",
+            district: "DAVAO DEL NORTE (SECOND LEGISLATIVE DISTRICT)",
+            project_count: 3,
+          },
+        ],
+        project_type_expertise: [
+          {
+            type_of_work: "Construction of Flood Mitigation Structure",
+            project_count: 4,
+            success_rate: 100,
+          },
+          {
+            type_of_work: "Drainage System Improvement",
+            project_count: 2,
+            success_rate: 100,
+          },
+        ],
+        verified: true,
+      },
+    ];
 
-        const createdContractors = await Contractor.insertMany(contractors);
-        console.log(`${createdContractors.length} contractors seeded successfully`);
-        return createdContractors;
-    } catch (error) {
-        console.error('Error seeding contractors:', error);
-        throw error;
-    }
+    const createdContractors = await Contractor.insertMany(contractors);
+    console.log(`${createdContractors.length} contractors seeded successfully`);
+    return createdContractors;
+  } catch (error) {
+    console.error("Error seeding contractors:", error);
+    throw error;
+  }
 };
 
 export default seedContractors;
-

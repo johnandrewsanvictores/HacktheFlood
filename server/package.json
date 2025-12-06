@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "seed": "node seeders/seed.js"
+    "seed": "node seeders/seed.js",
+    "migrate:contractors": "node seeders/migrateContractors.js",
+    "check:contractors": "node seeders/checkContractors.js"
   },
   "keywords": [],
   "author": "",
