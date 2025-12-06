@@ -1,29 +1,29 @@
 services:
   my-app-client:
     build: ./client
-    container_name: boiler-client
+    container_name: client-welga
     ports:
-      - '5173:5173'
+      - "5173:5173"
     env_file:
       - ./client/.env
     volumes:
       - /app/node_modules
       - ./client:/app
     networks:
-      - boiler-net
+      - welga-net
 
   my-app-server:
     build: ./server
-    container_name: boiler-server
+    container_name: server-welga
     ports:
-      - '3000:3000'
+      - "3000:3000"
     volumes:
       - ./server:/app
       - /app/node_modules
     env_file:
       - ./server/.env
     networks:
-      - boiler-net
+      - welga-net
 
 networks:
-  boiler-net:
+  welga-net:
