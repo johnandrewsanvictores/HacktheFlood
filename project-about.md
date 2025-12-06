@@ -1,12 +1,20 @@
+<<<<<<< HEAD
 # FloodGuard PH
 
 FloodGuard PH is a web-based transparency and monitoring platform designed to reduce corruption in flood-control projects in the Philippines. It empowers both government administrators and local communities to track, validate, and report on public infrastructure projects, promoting accountability and ensuring that flood-control projects are properly executed.
+=======
+This website is a web-based transparency and monitoring platform designed to reduce corruption in flood-control projects in the Philippines. It empowers both government administrators and local communities to track, validate, and report on public infrastructure projects, promoting accountability and ensuring that flood-control projects are properly executed.
+>>>>>>> 243c812cd013fd5c79518034c9612269d7bed0ec
 
 ---
 
 ## Overview
 
+<<<<<<< HEAD
 FloodGuard PH enables real-time monitoring of flood-control projects through geolocation, AI-assisted verification, and transparent public data. The platform ensures that project progress is visible to both officials and residents, helping identify ghost projects, delays, and budget inconsistencies.
+=======
+This website enables real-time monitoring of flood-control projects through geolocation, AI-assisted verification, and transparent public data. The platform ensures that project progress is visible to both officials and residents, helping identify ghost projects, delays, and budget inconsistencies.
+>>>>>>> 243c812cd013fd5c79518034c9612269d7bed0ec
 
 ---
 
@@ -132,6 +140,7 @@ Registered community members can receive SMS alerts for:
 
 ### 1. Incomplete Data Sources
 
+<<<<<<< HEAD
 **Solution:** Start with pilot areas; allow admin validation; crowdsource missing details.
 
 ### 2. Fake Reports or Manipulated Images
@@ -149,9 +158,32 @@ Registered community members can receive SMS alerts for:
 ### 5. Community Adoption
 
 **Solution:** Simple interface, anonymous reporting, and partnerships with barangays or NGOs.
+=======
+*Solution:* Start with pilot areas; allow admin validation; crowdsource missing details.
+
+### 2. Fake Reports or Manipulated Images
+
+*Solution:* Enforce live camera capture with location + timestamp metadata.
+
+### 3. AI Bias in Contractor Recommendation
+
+*Solution:* Combine deterministic scoring with AI reasoning.
+
+### 4. Privacy and Legal Concerns
+
+*Solution:* Only flag projects as “Under Review” before making public.
+
+### 5. Community Adoption
+
+*Solution:* Simple interface, anonymous reporting, and partnerships with barangays or NGOs.
+>>>>>>> 243c812cd013fd5c79518034c9612269d7bed0ec
 
 ---
 
 # Impact
 
+<<<<<<< HEAD
 FloodGuard PH aims to reduce corruption in flood-control infrastructure by enabling transparency, community participation, and AI-driven verification. It helps ensure that public funds are used properly and that flood-control systems are built to protect Filipino communities.
+=======
+This website aims to reduce corruption in flood-control infrastructure by enabling transparency, community participation, and AI-driven verification. It helps ensure that public funds are used properly and that flood-control systems are built to protect Filipino communities.
+>>>>>>> 243c812cd013fd5c79518034c9612269d7bed0ec
