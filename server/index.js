@@ -2,7 +2,6 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import authRoutes from "./routes/auth.js";
-import cors from 'cors';
 import testRoutes from './routes/test.js';
 import contractorsRoutes from './routes/contractors.js';
 import projectsRoutes from './routes/projects.js';
@@ -31,7 +30,6 @@ connectDbB().catch((err) => {
 });
 
 app.use(express.urlencoded({ extended: true }));
-connectDbB();
 
 app.use(express.json());
 app.use(cookieParser());
@@ -43,12 +41,6 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
-app.use(cors({
-    origin: 'http://localhost:5173',
-    credentials: true
-}));
-
-app.use("/auth", authRoutes);
 
 app.use(
   session({
@@ -64,6 +56,11 @@ app.use(
   })
 );
 
+app.use("/auth", authRoutes);
+app.use('/test', testRoutes);
+app.use('/api/contractors', contractorsRoutes);
+app.use('/api/projects', projectsRoutes);
+
 app.use((err, req, res, next) => {
   console.error("Server error:", err);
   res
@@ -71,9 +68,6 @@ app.use((err, req, res, next) => {
     .json({ error: "Internal server error", message: err.message });
 });
 
-app.get("/", (req, res) => {
-  res.json({ msg: "Server is running" });
-});
 
 app.post("/send-sms", async (req, res) => {
   try {
@@ -185,17 +179,11 @@ app.get("/pollination-safety-guide", async (req, res) => {
   }
 });
 
+app.get("/", (req, res) => {
+  res.json({ msg: "Server is running" });
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
-app.use('/test', testRoutes);
-app.use('/api/contractors', contractorsRoutes);
-app.use('/api/projects', projectsRoutes);
-
-app.get('/', (req, res) => {
-    res.json({"msg": "Hello world"});
-});
-
-app.listen(3000, () => {
-    console.log("Server is running at http://localhost:3000");
 });

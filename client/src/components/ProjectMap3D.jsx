@@ -1,37 +1,16 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import api from '../../axios.js';
 
 mapboxgl.accessToken = import.meta.env.VITE_MAP_TOKEN || 'pk.eyJ1IjoiamRyZXd3IiwiYSI6ImNtaHMzZjFrZzBkeWYyb3NkbnllOXFtbW0ifQ.pMqCXOknQOavqXUo1DBZmw';
 
-const ProjectMap3D = () => {
+const ProjectMap3D = ({ projects = [], selectedProject = null, onProjectSelect = null, loading = false }) => {
     const mapContainer = useRef(null);
     const map = useRef(null);
-    const [projects, setProjects] = useState([]);
-    const [selectedProject, setSelectedProject] = useState(null);
-    const [loading, setLoading] = useState(true);
     const markersRef = useRef([]);
 
     useEffect(() => {
-        const fetchProjects = async () => {
-            try {
-                const response = await api.get('/api/projects');
-                if (response.data.success) {
-                    setProjects(response.data.data);
-                }
-            } catch (error) {
-                console.error('Error fetching projects:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchProjects();
-    }, []);
-
-    useEffect(() => {
-        if (!mapContainer.current || loading || projects.length === 0) return;
+        if (!mapContainer.current || loading) return;
 
         if (!map.current) {
             map.current = new mapboxgl.Map({
@@ -56,9 +35,10 @@ const ProjectMap3D = () => {
 
                 map.current.setTerrain({ source: 'mapbox-dem', exaggeration: 1.5 });
 
-                const geoJsonData = {
-                    type: 'FeatureCollection',
-                    features: projects.map(project => ({
+                if (projects.length > 0) {
+                    const geoJsonData = {
+                        type: 'FeatureCollection',
+                        features: projects.map(project => ({
                         type: 'Feature',
                         geometry: {
                             type: 'Point',
@@ -166,8 +146,8 @@ const ProjectMap3D = () => {
                     const properties = e.features[0].properties;
 
                     const foundProject = projects.find(p => p._id === properties.id);
-                    if (foundProject) {
-                        setSelectedProject(foundProject);
+                    if (foundProject && onProjectSelect) {
+                        onProjectSelect(foundProject);
                     }
 
                     while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
@@ -214,6 +194,7 @@ const ProjectMap3D = () => {
                 map.current.on('mouseleave', 'unclustered-point', () => {
                     map.current.getCanvas().style.cursor = '';
                 });
+                }
             });
         } else {
             if (map.current.getSource('projects')) {
@@ -256,112 +237,27 @@ const ProjectMap3D = () => {
         };
     }, [projects, loading]);
 
+    useEffect(() => {
+        if (selectedProject && map.current) {
+            map.current.flyTo({
+                center: [selectedProject.longitude, selectedProject.latitude],
+                zoom: 12,
+                duration: 1000
+            });
+        }
+    }, [selectedProject]);
+
     if (loading) {
         return (
-            <div className="w-full h-screen flex items-center justify-center">
+            <div className="w-full h-full flex items-center justify-center">
                 <div className="text-lg">Loading map...</div>
             </div>
         );
     }
 
     return (
-        <div className="w-full h-screen relative">
+        <div className="w-full h-full relative">
             <div ref={mapContainer} className="w-full h-full" />
-            
-            {selectedProject && (
-                <div className="absolute top-4 right-4 bg-white rounded-lg shadow-lg p-6 max-w-md z-10 max-h-[80vh] overflow-y-auto">
-                    <button
-                        onClick={() => setSelectedProject(null)}
-                        className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-                    >
-                        ✕
-                    </button>
-                    <h2 className="text-2xl font-bold mb-4">{selectedProject.project_name}</h2>
-                    
-                    <div className="space-y-3">
-                        <div>
-                            <strong className="text-gray-700">Project ID:</strong>
-                            <p className="text-gray-900">{selectedProject.project_id}</p>
-                        </div>
-                        
-                        <div>
-                            <strong className="text-gray-700">Status:</strong>
-                            <span className={`ml-2 px-2 py-1 rounded text-sm capitalize ${
-                                selectedProject.status === 'finished' ? 'bg-green-100 text-green-800' :
-                                selectedProject.status === 'ongoing' ? 'bg-blue-100 text-blue-800' :
-                                'bg-gray-100 text-gray-800'
-                            }`}>
-                                {selectedProject.status}
-                            </span>
-                        </div>
-                        
-                        <div>
-                            <strong className="text-gray-700">Risk Score:</strong>
-                            <span className={`ml-2 px-2 py-1 rounded text-sm ${
-                                selectedProject.risk_score > 70 ? 'bg-red-100 text-red-800' :
-                                selectedProject.risk_score > 40 ? 'bg-yellow-100 text-yellow-800' :
-                                'bg-green-100 text-green-800'
-                            }`}>
-                                {selectedProject.risk_score}
-                            </span>
-                        </div>
-                        
-                        <div>
-                            <strong className="text-gray-700">Contractor:</strong>
-                            <p className="text-gray-900">{selectedProject.contractor_name}</p>
-                            {selectedProject.contractor_id && (
-                                <div className="mt-1 text-sm">
-                                    <p>Credit Score: {selectedProject.contractor_id.credit_score || 'N/A'}</p>
-                                    <p>Success Rate: {selectedProject.contractor_id.success_rate || 'N/A'}%</p>
-                                </div>
-                            )}
-                        </div>
-                        
-                        <div>
-                            <strong className="text-gray-700">Type of Work:</strong>
-                            <p className="text-gray-900">{selectedProject.type_of_work}</p>
-                        </div>
-                        
-                        <div>
-                            <strong className="text-gray-700">Region:</strong>
-                            <p className="text-gray-900">{selectedProject.region}</p>
-                        </div>
-                        
-                        <div>
-                            <strong className="text-gray-700">District:</strong>
-                            <p className="text-gray-900">{selectedProject.legislative_district}</p>
-                        </div>
-                        
-                        <div>
-                            <strong className="text-gray-700">Approved Budget:</strong>
-                            <p className="text-gray-900">₱{selectedProject.approved_budget?.toLocaleString()}</p>
-                        </div>
-                        
-                        <div>
-                            <strong className="text-gray-700">Contract Cost:</strong>
-                            <p className="text-gray-900">₱{selectedProject.contract_cost?.toLocaleString()}</p>
-                        </div>
-                        
-                        <div>
-                            <strong className="text-gray-700">Start Date:</strong>
-                            <p className="text-gray-900">{new Date(selectedProject.start_date).toLocaleDateString()}</p>
-                        </div>
-                        
-                        {selectedProject.completion_date_actual && (
-                            <div>
-                                <strong className="text-gray-700">Completion Date:</strong>
-                                <p className="text-gray-900">{new Date(selectedProject.completion_date_actual).toLocaleDateString()}</p>
-                            </div>
-                        )}
-                        
-                        {selectedProject.is_flagged && (
-                            <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded">
-                                <p className="text-red-800 font-semibold">⚠️ Flagged for Inspection</p>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            )}
         </div>
     );
 };

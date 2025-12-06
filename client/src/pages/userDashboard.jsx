@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   MapPin,
   Search,
@@ -17,86 +17,44 @@ import {
   Clock,
   AlertCircle,
 } from "lucide-react";
+import ProjectMap3D from "../components/ProjectMap3D.jsx";
+import api from "../../axios.js";
 
 const UserDashboard = () => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mock project data - replace with actual API call
-  const projects = [
-    {
-      id: 1,
-      name: "Flood Control System - Marikina River",
-      location: "Marikina City, Metro Manila",
-      budget: "₱150,000,000",
-      status: "ongoing",
-      progress: 65,
-      startDate: "Jan 2024",
-      endDate: "Dec 2025",
-      coordinates: { lat: 14.6507, lng: 121.1029 },
-      description:
-        "Construction of flood control infrastructure along Marikina River",
-    },
-    {
-      id: 2,
-      name: "Bridge Construction - EDSA-Shaw",
-      location: "Mandaluyong City, Metro Manila",
-      budget: "₱250,000,000",
-      status: "completed",
-      progress: 100,
-      startDate: "Mar 2023",
-      endDate: "Nov 2024",
-      coordinates: { lat: 14.5816, lng: 121.0536 },
-      description: "New pedestrian bridge connecting EDSA to Shaw Boulevard",
-    },
-    {
-      id: 3,
-      name: "Road Widening Project - C5",
-      location: "Pasig City, Metro Manila",
-      budget: "₱180,000,000",
-      status: "ongoing",
-      progress: 45,
-      startDate: "Jun 2024",
-      endDate: "Jun 2026",
-      coordinates: { lat: 14.5764, lng: 121.0851 },
-      description: "Road widening and improvement along C5 corridor",
-    },
-    {
-      id: 4,
-      name: "Drainage System Upgrade",
-      location: "Quezon City, Metro Manila",
-      budget: "₱95,000,000",
-      status: "planned",
-      progress: 0,
-      startDate: "Feb 2025",
-      endDate: "Dec 2026",
-      coordinates: { lat: 14.676, lng: 121.0437 },
-      description: "Modernization of drainage systems in flood-prone areas",
-    },
-    {
-      id: 5,
-      name: "School Building Construction",
-      location: "Taguig City, Metro Manila",
-      budget: "₱120,000,000",
-      status: "ongoing",
-      progress: 80,
-      startDate: "Sep 2023",
-      endDate: "Mar 2025",
-      coordinates: { lat: 14.5176, lng: 121.0509 },
-      description: "New 3-story school building with modern facilities",
-    },
-  ];
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await api.get('/api/projects');
+        if (response.data.success) {
+          setProjects(response.data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "completed":
+      case "finished":
         return "bg-green-100 text-green-700 border-green-300";
       case "ongoing":
         return "bg-blue-100 text-blue-700 border-blue-300";
-      case "planned":
+      case "pending":
         return "bg-gray-100 text-gray-700 border-gray-300";
+      case "cancelled":
+        return "bg-red-100 text-red-700 border-red-300";
       default:
         return "bg-gray-100 text-gray-700 border-gray-300";
     }
@@ -104,30 +62,51 @@ const UserDashboard = () => {
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case "completed":
+      case "finished":
         return <CheckCircle2 className="w-4 h-4" />;
       case "ongoing":
         return <Clock className="w-4 h-4" />;
-      case "planned":
+      case "pending":
+        return <AlertCircle className="w-4 h-4" />;
+      case "cancelled":
         return <AlertCircle className="w-4 h-4" />;
       default:
         return <AlertCircle className="w-4 h-4" />;
     }
   };
 
+  const getDisplayStatus = (status) => {
+    const statusMap = {
+      'finished': 'completed',
+      'ongoing': 'ongoing',
+      'pending': 'planned',
+      'cancelled': 'cancelled'
+    };
+    return statusMap[status] || status;
+  };
+
   const filteredProjects = projects.filter((project) => {
     const matchesSearch =
-      project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      project.location.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesFilter =
-      filterStatus === "all" || project.status === filterStatus;
+      project.project_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      project.region?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      project.contractor_name?.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    let matchesFilter = true;
+    if (filterStatus === "all") {
+      matchesFilter = true;
+    } else if (filterStatus === "completed") {
+      matchesFilter = project.status === "finished";
+    } else {
+      matchesFilter = project.status === filterStatus;
+    }
+    
     return matchesSearch && matchesFilter;
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="h-screen bg-gray-50 flex flex-col overflow-hidden">
       {/* Header Navigation */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
+      <header className="bg-white border-b border-gray-200 z-40 flex-shrink-0">
         <div className="px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button
@@ -173,7 +152,7 @@ const UserDashboard = () => {
       </header>
 
       {/* Main Content */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex overflow-hidden min-h-0">
         {/* Left Sidebar - Project List */}
         <aside
           className={`${
@@ -203,7 +182,7 @@ const UserDashboard = () => {
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
               >
-                All ({projects.length})
+                All ({projects.length || 0})
               </button>
               <button
                 onClick={() => setFilterStatus("ongoing")}
@@ -225,248 +204,235 @@ const UserDashboard = () => {
               >
                 Completed
               </button>
+              <button
+                onClick={() => setFilterStatus("pending")}
+                className={`flex-1 px-3 py-2 text-xs font-medium rounded-lg transition-colors ${
+                  filterStatus === "pending"
+                    ? "bg-brand-primary text-white"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                Pending
+              </button>
             </div>
           </div>
 
           {/* Project List */}
           <div className="flex-1 overflow-y-auto">
             <div className="p-3 space-y-2">
-              {filteredProjects.map((project) => (
-                <button
-                  key={project.id}
-                  onClick={() => setSelectedProject(project)}
-                  className={`w-full text-left p-4 rounded-lg border transition-all hover:shadow-md ${
-                    selectedProject?.id === project.id
-                      ? "border-brand-primary bg-blue-50 shadow-md"
-                      : "border-gray-200 bg-white hover:border-gray-300"
-                  }`}
-                >
-                  <div className="flex items-start justify-between gap-2 mb-2">
-                    <h3 className="font-semibold text-gray-900 text-sm line-clamp-2">
-                      {project.name}
-                    </h3>
-                    <ChevronRight
-                      className={`w-5 h-5 flex-shrink-0 transition-transform ${
-                        selectedProject?.id === project.id
-                          ? "text-brand-primary"
-                          : "text-gray-400"
-                      }`}
-                    />
-                  </div>
-
-                  <div className="flex items-center gap-1.5 text-xs text-gray-600 mb-3">
-                    <MapPin className="w-3.5 h-3.5" />
-                    <span className="line-clamp-1">{project.location}</span>
-                  </div>
-
-                  <div className="flex items-center justify-between gap-2">
-                    <span
-                      className={`inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium border ${getStatusColor(
-                        project.status
-                      )}`}
-                    >
-                      {getStatusIcon(project.status)}
-                      <span className="capitalize">{project.status}</span>
-                    </span>
-                    <span className="text-xs font-semibold text-gray-700">
-                      {project.progress}%
-                    </span>
-                  </div>
-
-                  {project.status === "ongoing" && (
-                    <div className="mt-3">
-                      <div className="w-full bg-gray-200 rounded-full h-1.5">
-                        <div
-                          className="bg-brand-gradient h-1.5 rounded-full transition-all"
-                          style={{ width: `${project.progress}%` }}
-                        ></div>
-                      </div>
+              {loading ? (
+                <div className="text-center py-8 text-gray-500">Loading projects...</div>
+              ) : filteredProjects.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">No projects found</div>
+              ) : (
+                filteredProjects.map((project) => (
+                  <button
+                    key={project._id}
+                    onClick={() => setSelectedProject(project)}
+                    className={`w-full text-left p-4 rounded-lg border transition-all hover:shadow-md ${
+                      selectedProject?._id === project._id
+                        ? "border-brand-primary bg-blue-50 shadow-md"
+                        : "border-gray-200 bg-white hover:border-gray-300"
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                      <h3 className="font-semibold text-gray-900 text-sm line-clamp-2">
+                        {project.project_name}
+                      </h3>
+                      <ChevronRight
+                        className={`w-5 h-5 flex-shrink-0 transition-transform ${
+                          selectedProject?._id === project._id
+                            ? "text-brand-primary"
+                            : "text-gray-400"
+                        }`}
+                      />
                     </div>
-                  )}
-                </button>
-              ))}
+
+                    <div className="flex items-center gap-1.5 text-xs text-gray-600 mb-3">
+                      <MapPin className="w-3.5 h-3.5" />
+                      <span className="line-clamp-1">{project.region} • {project.legislative_district}</span>
+                    </div>
+
+                    <div className="flex items-center justify-between gap-2">
+                      <span
+                        className={`inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium border ${getStatusColor(
+                          project.status
+                        )}`}
+                      >
+                        {getStatusIcon(project.status)}
+                        <span className="capitalize">{getDisplayStatus(project.status)}</span>
+                      </span>
+                      {project.is_flagged && (
+                        <span className="text-xs font-semibold text-red-600">⚠️ Flagged</span>
+                      )}
+                    </div>
+                  </button>
+                ))
+              )}
             </div>
           </div>
         </aside>
 
         {/* Right Side - Map and Project Details */}
-        <main className="flex-1 flex flex-col overflow-hidden">
+        <main className="flex-1 flex flex-col overflow-hidden min-h-0 relative">
           {/* Map Container */}
-          <div className="flex-1 relative bg-gray-100">
-            {/* Map Placeholder - Replace with actual map library (Google Maps, Mapbox, Leaflet, etc.) */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-center">
-                <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                  <MapPin className="w-12 h-12 text-brand-primary" />
+          <div className="absolute inset-0 bg-gray-100">
+            <ProjectMap3D 
+              projects={projects} 
+              selectedProject={selectedProject}
+              onProjectSelect={setSelectedProject}
+              loading={loading}
+            />
+          </div>
+
+          {/* Project Details Panel */}
+          {selectedProject && (
+            <div className="absolute inset-0 flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm z-50">
+              <div className="bg-white rounded-xl shadow-brand-lg p-5 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+                <div className="flex items-start justify-between mb-4">
+                  <h2 className="text-lg font-bold text-gray-900 pr-8">
+                    {selectedProject.project_name}
+                  </h2>
+                  <button
+                    onClick={() => setSelectedProject(null)}
+                    className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+                  >
+                    <X className="w-5 h-5 text-gray-500" />
+                  </button>
                 </div>
-                <h3 className="text-xl font-bold text-gray-700 mb-2">
-                  Interactive Map View
-                </h3>
-                <p className="text-gray-500 text-sm">
-                  Integrate Google Maps, Mapbox, or Leaflet here
-                </p>
-              </div>
-            </div>
 
-            {/* Map Markers Preview (for demonstration) */}
-            {filteredProjects.map((project) => (
-              <div
-                key={project.id}
-                className={`absolute w-10 h-10 bg-white rounded-full border-2 shadow-lg flex items-center justify-center cursor-pointer hover:scale-110 transition-transform ${
-                  selectedProject?.id === project.id
-                    ? "border-brand-primary ring-4 ring-brand-primary/30"
-                    : "border-gray-300"
-                }`}
-                style={{
-                  left: `${20 + project.id * 15}%`,
-                  top: `${30 + project.id * 10}%`,
-                }}
-                onClick={() => setSelectedProject(project)}
-              >
-                <MapPin
-                  className={`w-5 h-5 ${
-                    selectedProject?.id === project.id
-                      ? "text-brand-primary"
-                      : "text-gray-600"
-                  }`}
-                />
-              </div>
-            ))}
-
-            {/* Project Details Card (when project is selected) */}
-            {selectedProject && (
-              <div className="absolute inset-0 flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm z-50">
-                <div className="bg-white rounded-xl shadow-brand-lg p-5 w-full max-w-lg max-h-[90vh] overflow-y-auto">
-                  <div className="flex items-start justify-between mb-4">
-                    <h2 className="text-lg font-bold text-gray-900 pr-8">
-                      {selectedProject.name}
-                    </h2>
-                    <button
-                      onClick={() => setSelectedProject(null)}
-                      className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
-                    >
-                      <X className="w-5 h-5 text-gray-500" />
-                    </button>
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-blue-50 rounded-lg">
+                      <MapPin className="w-5 h-5 text-brand-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-xs font-medium text-gray-500 mb-1">
+                        Location
+                      </p>
+                      <p className="text-sm font-semibold text-gray-900">
+                        {selectedProject.region} • {selectedProject.legislative_district}
+                      </p>
+                    </div>
                   </div>
 
-                  <div className="space-y-4">
-                    {/* Location */}
-                    <div className="flex items-start gap-3">
-                      <div className="p-2 bg-blue-50 rounded-lg">
-                        <MapPin className="w-5 h-5 text-brand-primary" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-xs font-medium text-gray-500 mb-1">
-                          Location
-                        </p>
-                        <p className="text-sm font-semibold text-gray-900">
-                          {selectedProject.location}
-                        </p>
-                      </div>
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-blue-50 rounded-lg">
+                      {getStatusIcon(selectedProject.status)}
                     </div>
+                    <div className="flex-1">
+                      <p className="text-xs font-medium text-gray-500 mb-1">
+                        Status
+                      </p>
+                      <span
+                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-sm font-semibold border ${getStatusColor(
+                          selectedProject.status
+                        )}`}
+                      >
+                        <span className="capitalize">
+                          {getDisplayStatus(selectedProject.status)}
+                        </span>
+                      </span>
+                    </div>
+                  </div>
 
-                    {/* Status */}
+                  {selectedProject.risk_score !== undefined && (
                     <div className="flex items-start gap-3">
                       <div className="p-2 bg-blue-50 rounded-lg">
-                        {getStatusIcon(selectedProject.status)}
+                        <AlertCircle className="w-5 h-5 text-brand-primary" />
                       </div>
                       <div className="flex-1">
                         <p className="text-xs font-medium text-gray-500 mb-1">
-                          Status
+                          Risk Score
                         </p>
-                        <span
-                          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-sm font-semibold border ${getStatusColor(
-                            selectedProject.status
-                          )}`}
-                        >
-                          <span className="capitalize">
-                            {selectedProject.status}
-                          </span>
-                          <span>• {selectedProject.progress}%</span>
+                        <span className={`px-3 py-1 rounded-lg text-sm font-semibold ${
+                          selectedProject.risk_score > 70 ? 'bg-red-100 text-red-800' :
+                          selectedProject.risk_score > 40 ? 'bg-yellow-100 text-yellow-800' :
+                          'bg-green-100 text-green-800'
+                        }`}>
+                          {selectedProject.risk_score}
                         </span>
                       </div>
                     </div>
+                  )}
 
-                    {/* Budget */}
-                    <div className="flex items-start gap-3">
-                      <div className="p-2 bg-blue-50 rounded-lg">
-                        <DollarSign className="w-5 h-5 text-brand-primary" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-xs font-medium text-gray-500 mb-1">
-                          Budget
-                        </p>
-                        <p className="text-sm font-semibold text-gray-900">
-                          {selectedProject.budget}
-                        </p>
-                      </div>
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-blue-50 rounded-lg">
+                      <DollarSign className="w-5 h-5 text-brand-primary" />
                     </div>
-
-                    {/* Timeline */}
-                    <div className="flex items-start gap-3">
-                      <div className="p-2 bg-blue-50 rounded-lg">
-                        <Calendar className="w-5 h-5 text-brand-primary" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-xs font-medium text-gray-500 mb-1">
-                          Timeline
-                        </p>
-                        <p className="text-sm font-semibold text-gray-900">
-                          {selectedProject.startDate} -{" "}
-                          {selectedProject.endDate}
-                        </p>
-                      </div>
+                    <div className="flex-1">
+                      <p className="text-xs font-medium text-gray-500 mb-1">
+                        Budget
+                      </p>
+                      <p className="text-sm font-semibold text-gray-900">
+                        ₱{selectedProject.approved_budget?.toLocaleString()}
+                      </p>
                     </div>
+                  </div>
 
-                    {/* Description */}
-                    <div className="flex items-start gap-3">
-                      <div className="p-2 bg-blue-50 rounded-lg">
-                        <Building2 className="w-5 h-5 text-brand-primary" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="text-xs font-medium text-gray-500 mb-1">
-                          Description
-                        </p>
-                        <p className="text-sm text-gray-700">
-                          {selectedProject.description}
-                        </p>
-                      </div>
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-blue-50 rounded-lg">
+                      <Calendar className="w-5 h-5 text-brand-primary" />
                     </div>
-
-                    {/* Progress Bar (for ongoing projects) */}
-                    {selectedProject.status === "ongoing" && (
-                      <div className="pt-2">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs font-medium text-gray-600">
-                            Project Progress
-                          </span>
-                          <span className="text-xs font-bold text-brand-primary">
-                            {selectedProject.progress}%
-                          </span>
-                        </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2.5">
-                          <div
-                            className="bg-brand-gradient h-2.5 rounded-full transition-all"
-                            style={{ width: `${selectedProject.progress}%` }}
-                          ></div>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Action Buttons */}
-                    <div className="flex gap-2 pt-2">
-                      <button className="flex-1 bg-brand-gradient text-white py-2.5 rounded-lg font-semibold text-sm hover:shadow-brand-lg transition-all">
-                        Report Issue
-                      </button>
-                      <button className="flex-1 bg-gray-100 text-gray-700 py-2.5 rounded-lg font-semibold text-sm hover:bg-gray-200 transition-all">
-                        View Photos
-                      </button>
+                    <div className="flex-1">
+                      <p className="text-xs font-medium text-gray-500 mb-1">
+                        Timeline
+                      </p>
+                      <p className="text-sm font-semibold text-gray-900">
+                        {new Date(selectedProject.start_date).toLocaleDateString()}
+                        {selectedProject.completion_date_actual && (
+                          <> - {new Date(selectedProject.completion_date_actual).toLocaleDateString()}</>
+                        )}
+                      </p>
                     </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-blue-50 rounded-lg">
+                      <Building2 className="w-5 h-5 text-brand-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-xs font-medium text-gray-500 mb-1">
+                        Contractor
+                      </p>
+                      <p className="text-sm font-semibold text-gray-900">
+                        {selectedProject.contractor_name}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-blue-50 rounded-lg">
+                      <Building2 className="w-5 h-5 text-brand-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-xs font-medium text-gray-500 mb-1">
+                        Type of Work
+                      </p>
+                      <p className="text-sm text-gray-700">
+                        {selectedProject.type_of_work}
+                      </p>
+                    </div>
+                  </div>
+
+                  {selectedProject.is_flagged && (
+                    <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded">
+                      <p className="text-red-800 font-semibold">⚠️ Flagged for Inspection</p>
+                    </div>
+                  )}
+
+                  <div className="flex gap-2 pt-2">
+                    <button className="flex-1 bg-brand-gradient text-white py-2.5 rounded-lg font-semibold text-sm hover:shadow-brand-lg transition-all">
+                      Report Issue
+                    </button>
+                    <button className="flex-1 bg-gray-100 text-gray-700 py-2.5 rounded-lg font-semibold text-sm hover:bg-gray-200 transition-all">
+                      View Photos
+                    </button>
                   </div>
                 </div>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </main>
       </div>
     </div>
