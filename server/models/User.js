@@ -25,6 +25,22 @@ const userSchema = new mongoose.Schema(
       enum: ["user", "admin"],
       default: "user",
     },
+    latitude: {
+      type: Number,
+    },
+    longitude: {
+      type: Number,
+    },
+    last_location_update: {
+      type: Date,
+    },
+    push_subscription: {
+      endpoint: String,
+      keys: {
+        p256dh: String,
+        auth: String,
+      },
+    },
   },
   { timestamps: true }
 );

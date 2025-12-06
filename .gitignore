@@ -34,3 +34,8 @@ server/dist/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# uploads
+server/uploads/*
+!server/uploads/.gitkeep
+!server/uploads/reports/.gitkeep

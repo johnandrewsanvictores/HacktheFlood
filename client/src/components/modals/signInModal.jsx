@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { X } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { X, MapPin, Loader } from "lucide-react";
 import api from "../../../axios";
 import showAlert from "../ui/Alerts";
 import { useNavigate } from "react-router-dom";
@@ -8,15 +8,72 @@ const SignInModal = ({ isOpen, onClose, onSwitchToSignUp }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [location, setLocation] = useState(null);
+  const [isRequestingLocation, setIsRequestingLocation] = useState(false);
+  const [locationError, setLocationError] = useState(null);
   const navigate = useNavigate();
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    if (isOpen) {
+      requestLocation();
+    } else {
+      setLocation(null);
+      setLocationError(null);
+    }
+  }, [isOpen]);
+
+  const requestLocation = () => {
+    setIsRequestingLocation(true);
+    setLocationError(null);
+
+    if (!navigator.geolocation) {
+      setLocationError("Geolocation is not supported by your browser.");
+      setIsRequestingLocation(false);
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLocation({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          accuracy: position.coords.accuracy,
+        });
+        setIsRequestingLocation(false);
+        setLocationError(null);
+      },
+      (error) => {
+        let errorMessage = "Unable to get your location. ";
+        if (error.code === error.PERMISSION_DENIED) {
+          errorMessage += "Please enable location permissions in your browser settings to view nearby government projects.";
+        } else if (error.code === error.POSITION_UNAVAILABLE) {
+          errorMessage += "Location information is unavailable.";
+        } else if (error.code === error.TIMEOUT) {
+          errorMessage += "Location request timed out. Please try again.";
+        } else {
+          errorMessage += "An unknown error occurred.";
+        }
+        setLocationError(errorMessage);
+        setIsRequestingLocation(false);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      }
+    );
+  };
 
   const handleSignIn = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await api.post("/auth/signin", { username, password });
+      const signInData = { username, password };
+      if (location) {
+        signInData.latitude = location.latitude;
+        signInData.longitude = location.longitude;
+      }
+      await api.post("/auth/signin", signInData);
       setLoading(false);
       onClose();
       showAlert({
@@ -63,6 +120,43 @@ const SignInModal = ({ isOpen, onClose, onSwitchToSignUp }) => {
           </p>
         </div>
         <form className="px-6 py-8" onSubmit={handleSignIn}>
+          <div className="mb-5 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="flex items-start gap-3">
+              <MapPin className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-blue-900 mb-1">
+                  Location Access Required
+                </p>
+                <p className="text-xs text-blue-700">
+                  We need your location to show nearby government flood-control projects. Please allow location access when prompted.
+                </p>
+                {isRequestingLocation && (
+                  <div className="flex items-center gap-2 mt-2 text-blue-600">
+                    <Loader className="w-4 h-4 animate-spin" />
+                    <span className="text-xs">Requesting location...</span>
+                  </div>
+                )}
+                {location && (
+                  <div className="flex items-center gap-2 mt-2 text-green-600">
+                    <MapPin className="w-4 h-4" />
+                    <span className="text-xs">Location captured successfully</span>
+                  </div>
+                )}
+                {locationError && (
+                  <div className="mt-2">
+                    <p className="text-xs text-red-600 mb-2">{locationError}</p>
+                    <button
+                      type="button"
+                      onClick={requestLocation}
+                      className="text-xs text-blue-600 hover:text-blue-800 font-semibold underline"
+                    >
+                      Try again
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
           <div className="space-y-5">
             <div>
               <label

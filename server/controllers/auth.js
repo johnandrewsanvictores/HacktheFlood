@@ -47,7 +47,7 @@ export const logout = (req, res) => {
 
 export const createUser = async (req, res) => {
   try {
-    const { phone_number, password, username } = req.body;
+    const { phone_number, password, username, latitude, longitude } = req.body;
 
     if (!username || !password || !phone_number) {
       return res
@@ -67,12 +67,20 @@ export const createUser = async (req, res) => {
       username.toLowerCase().includes("admin") ||
       username.toLowerCase() === "admin";
 
-    const user = await User.create({
+    const userData = {
       phone_number,
       password: hashedPassword,
       username,
       role: isAdmin ? "admin" : "user",
-    });
+    };
+
+    if (latitude !== undefined && longitude !== undefined) {
+      userData.latitude = parseFloat(latitude);
+      userData.longitude = parseFloat(longitude);
+      userData.last_location_update = new Date();
+    }
+
+    const user = await User.create(userData);
 
     const token = createToken(user._id, user.is_new_user, user.role);
 
@@ -118,7 +126,7 @@ export const createUser = async (req, res) => {
 
 export const signIn = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { username, password, latitude, longitude } = req.body;
 
     const user = await User.findOne({ username });
     if (!user) return res.status(400).json({ error: "Invalid credentials" });
@@ -126,9 +134,17 @@ export const signIn = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ error: "Invalid credentials" });
 
+    const updateData = { is_new_user: false };
+    
+    if (latitude !== undefined && longitude !== undefined) {
+      updateData.latitude = parseFloat(latitude);
+      updateData.longitude = parseFloat(longitude);
+      updateData.last_location_update = new Date();
+    }
+
     await User.findByIdAndUpdate(
       user._id,
-      { $set: { is_new_user: false } },
+      { $set: updateData },
       { new: true }
     );
 
@@ -199,6 +215,54 @@ export const getSpecificUser = async (req, res) => {
     res.json(users[0]);
   } catch (err) {
     res.status(500).json({ error: err });
+  }
+};
+
+export const subscribePush = async (req, res) => {
+  try {
+    const userId = req.user?._id;
+    if (!userId) {
+      return res.status(401).json({ success: false, error: 'Not authenticated' });
+    }
+
+    const { endpoint, keys } = req.body;
+
+    if (!endpoint || !keys || !keys.p256dh || !keys.auth) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Invalid push subscription data' 
+      });
+    }
+
+    const user = await User.findByIdAndUpdate(userId, {
+      $set: {
+        push_subscription: {
+          endpoint,
+          keys: {
+            p256dh: keys.p256dh,
+            auth: keys.auth,
+          },
+        },
+      },
+    }, { new: true });
+
+    if (!user) {
+      return res.status(404).json({ 
+        success: false, 
+        error: 'User not found' 
+      });
+    }
+
+    return res.status(200).json({ 
+      success: true, 
+      message: 'Push subscription saved successfully' 
+    });
+  } catch (error) {
+    console.error('Error saving push subscription:', error);
+    return res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
   }
 };
 
