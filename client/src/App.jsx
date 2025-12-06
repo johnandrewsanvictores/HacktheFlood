@@ -1,14 +1,10 @@
+import ProjectMap3D from './components/ProjectMap3D.jsx';
+
 function App() {
   return (
-    <>
-      <h1 className="text-red-500 text-4xl flex justify-center h-screen w-screen items-center">
-        Hello from me{" "}
-      </h1>
-      <p className="text-blue-700 text-7xl">
-        {" "}
-        sfsd fshfkjsdhj fjsdhfshjdfshjkd jfksdhjfsdhjfsdhjeffdgdfgdfrld
-      </p>
-    </>
+    <div className="w-full h-screen">
+      <ProjectMap3D />
+    </div>
   );
 }
 

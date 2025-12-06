@@ -1,6 +1,6 @@
 import ProjectMap3D from '../components/ProjectMap3D.jsx';
 
-const TestPages = () => {
+const TestPage = () => {
     return (
         <div className="w-full h-screen">
             <ProjectMap3D />
@@ -8,5 +8,5 @@ const TestPages = () => {
     );
 };
 
-export default TestPages;
+export default TestPage;
 

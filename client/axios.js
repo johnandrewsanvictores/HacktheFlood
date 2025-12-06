@@ -1,10 +1,21 @@
 import axios from 'axios';
 
+const getBaseURL = () => {
+    const envURL = import.meta.env.VITE_API_URL;
+    if (envURL) {
+        if (envURL.startsWith('http://') || envURL.startsWith('https://')) {
+            return envURL;
+        }
+        return `http://${envURL}`;
+    }
+    return 'http://localhost:3000';
+};
+
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
-    withCredentials: true, // This is required for sending cookies
+    baseURL: getBaseURL(),
+    withCredentials: true,
     headers: {
-        'Content-Type': 'application/json' // ensure it's JSON
+        'Content-Type': 'application/json'
     }
 });
 
