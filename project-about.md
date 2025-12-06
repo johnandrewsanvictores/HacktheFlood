@@ -130,23 +130,41 @@ Registered community members can receive SMS alerts for:
 
 ### 1. Incomplete Data Sources
 
-*Solution:* Start with pilot areas; allow admin validation; crowdsource missing details.
+**Solution:** Start with pilot areas; allow admin validation; crowdsource missing details.
 
 ### 2. Fake Reports or Manipulated Images
 
-*Solution:* Enforce live camera capture with location + timestamp metadata.
+**Solution:** Enforce live camera capture with location + timestamp metadata.
 
 ### 3. AI Bias in Contractor Recommendation
 
-*Solution:* Combine deterministic scoring with AI reasoning.
+**Solution:** Combine deterministic scoring with AI reasoning.
 
 ### 4. Privacy and Legal Concerns
 
-*Solution:* Only flag projects as “Under Review” before making public.
+**Solution:** Only flag projects as “Under Review” before making public.
 
 ### 5. Community Adoption
 
-*Solution:* Simple interface, anonymous reporting, and partnerships with barangays or NGOs.
+# **Solution:** Simple interface, anonymous reporting, and partnerships with barangays or NGOs.
+
+_Solution:_ Start with pilot areas; allow admin validation; crowdsource missing details.
+
+### 2. Fake Reports or Manipulated Images
+
+_Solution:_ Enforce live camera capture with location + timestamp metadata.
+
+### 3. AI Bias in Contractor Recommendation
+
+_Solution:_ Combine deterministic scoring with AI reasoning.
+
+### 4. Privacy and Legal Concerns
+
+_Solution:_ Only flag projects as “Under Review” before making public.
+
+### 5. Community Adoption
+
+_Solution:_ Simple interface, anonymous reporting, and partnerships with barangays or NGOs.
 
 ---
 
