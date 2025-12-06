@@ -4,10 +4,7 @@ function App() {
       <h1 className="text-red-500 text-4xl flex justify-center h-screen w-screen items-center">
         Hello from me{" "}
       </h1>
-      <p className="text-blue-700 text-7xl">
-        {" "}
-        sfsd fshfkjsdhj fjsdhfshjdfshjkd jfksdhjfsdhjfsdhjeffdgdfgdfrld
-      </p>
+      <p className="text-blue-700 text-7xl"></p>
     </>
   );
 }
