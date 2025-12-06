@@ -1,19 +1,20 @@
-import express from 'express';
+import express from "express";
 import {
-    getAllContractors,
-    getContractorById,
-    createContractor,
-    updateContractor,
-    deleteContractor
-} from '../controllers/contractorController.js';
+  getAllContractors,
+  getContractorById,
+  createContractor,
+  updateContractor,
+  deleteContractor,
+  recommendContractors,
+} from "../controllers/contractorController.js";
 
 const router = express.Router();
 
-router.get('/', getAllContractors);
-router.get('/:id', getContractorById);
-router.post('/', createContractor);
-router.put('/:id', updateContractor);
-router.delete('/:id', deleteContractor);
+router.get("/", getAllContractors);
+router.get("/:id", getContractorById);
+router.post("/", createContractor);
+router.post("/recommendations", recommendContractors);
+router.put("/:id", updateContractor);
+router.delete("/:id", deleteContractor);
 
 export default router;
-
